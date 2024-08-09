@@ -100,9 +100,9 @@ def sph_etl():
 
         ch_summary_s3_path = f"{processed_s3_path}/channel_summary"
 
-        # Reduce DataFrame to a single partition and save as a single Parquet file with Snappy compression
         logger.info("Save to S3 bucket Channel Summary dataframe...")
         ch_summary_df.write \
+            .mode("overwrite") \
             .partitionBy("year", "month", "day") \
             .parquet(ch_summary_s3_path, compression="snappy")
         logger.info("Channel Summary save to S3 successful...")
@@ -138,9 +138,10 @@ def sph_etl():
             .withColumn("day", dayofmonth(current_date()))
 
         ch_playlist_s3_path = f"{processed_s3_path}/channel_playlist"
-        # Reduce DataFrame to a single partition and save as a single Parquet file with Snappy compression
+
         logger.info("Save to S3 bucket Channel Playlist dataframe...")
         ch_playlist_df.write \
+            .mode("overwrite") \
             .partitionBy("year", "month", "day") \
             .parquet(ch_playlist_s3_path, compression="snappy")
         logger.info("Channel Playlist save to S3 successful...")
