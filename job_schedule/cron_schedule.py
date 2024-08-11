@@ -2,7 +2,7 @@ import schedule
 import time
 import subprocess
 
-schedule_time = "21:31"
+schedule_time = "23:08"
 
 
 """Method to run scheduled sph youtube data scripts"""
@@ -11,12 +11,15 @@ schedule_time = "21:31"
 def run_sph_yt_data_scripts():
     print("Starting fetch_youtube_data.py...")
     try:
-        result = subprocess.run(["python3", "../raw-data-ingestion/batch/fetch_youtube_data.py"], check=True)
+        result_data = subprocess.run(["python3", "../raw-data-ingestion/batch/fetch_youtube_data.py"], check=True)
         print("fetch_youtube_data.py completed successfully.")
-        if result.returncode == 0:
-            print("Running process_youtube_sph_data.py...")
-            subprocess.run(["python3", "../etl/jobs/process_youtube_sph_data.py"])
-    except Exception as e:
+        if result_data.returncode == 0:
+            print("Running process_youtube_data.py...")
+            process_data = subprocess.run(["python3", "../etl/jobs/process_youtube_data.py"], check=True)
+            if process_data.returncode == 0:
+                print("Running create_tables.py...")
+                subprocess.run(["python3", "../athena/create_tables.py"], check=True)
+    except subprocess.CalledProcessError as e:
         print(f"Error running schedule: {e}")
 
 
