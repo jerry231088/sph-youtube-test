@@ -148,12 +148,13 @@ def upload_sph_yt_data():
                                                                                                      {}).get('uploads',
                                                                                                              '')
             ch_play_list.update({'playListId': play_list_id})
+            print(f'Fetched {channel_name} channel topic content details successfully...')
             print('Fetching channel playlist items...')
             playlist_videos = get_play_list_videos(play_list_id)
             print(f'Fetched {channel_name} channel playlist items successfully...')
             ch_play_list.update({'oneYearOldVideos': playlist_videos})
             play_list_data.append(ch_play_list)
-            print('Fetched {channel_name} channel content details successfully...')
+            print(f'Fetched {channel_name} channel content details successfully...')
 
         part_df_dict = dict()
         statistics_data_df = pd.DataFrame(statistics_data)
