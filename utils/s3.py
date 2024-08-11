@@ -24,6 +24,7 @@ def upload_to_s3(df, part):
     while retry_count < max_retries:
         try:
             s3.upload_file(file_name, bucket_name, s3_key)
+            break
         except ClientError as e:
             print(f"Attempt {retry_count + 1} failed: {e}")
             retry_count += 1
@@ -33,5 +34,6 @@ def upload_to_s3(df, part):
                 time.sleep(sleep_time)
             else:
                 print(f"Failed to upload file {file_name} after {max_retries} attempts.")
+                break
 
     print(f'File uploaded to s3://{bucket_name}/{s3_key}')

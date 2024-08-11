@@ -1,5 +1,5 @@
 base_url = f"https://www.googleapis.com/youtube/v3/"
-api_key = f"AIzaSyB9g9I5bonqdV_ZrtIPBCSo1GSiMNl1gRM"
+api_key = f"AIzaSyDsRn4JFvAWJOo--X5LShKOQvOOs8klIoI"
 # AIzaSyCCHsTgpn_KP4Qn0UoE0N4YFMHmlwAOGgg
 youtube_channels = {
         "straitstimes": "UC4p_I9eiRewn2KoU-nawrDg",
