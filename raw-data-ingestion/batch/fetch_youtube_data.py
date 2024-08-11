@@ -9,6 +9,8 @@ from apis.get import fetch_video_statistics, fetch_channel_statistics, fetch_cha
     fetch_channel_topic_categories, fetch_channel_content_details, fetch_channel_snippet, \
     fetch_play_list_snippet_contents
 
+from concurrent.futures import ThreadPoolExecutor
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(os.path.dirname(current_dir))
 sys.path.append(parent_dir)
@@ -52,6 +54,10 @@ def get_video_stats(video_id):
         return video_response.get('items', [])[0].get('statistics', {})
     else:
         return {}
+
+
+def fetch_video_stats(video_id):
+    return get_video_stats(video_id)
 
 
 def upload_sph_yt_data():
@@ -153,8 +159,12 @@ def upload_sph_yt_data():
         play_list_data_df.reset_index(drop=True, inplace=True)
         play_list_data_df = pd.concat([play_list_data_df, pd.json_normalize(play_list_data_df['oneYearOldVideos'])],
                                       axis=1).drop(columns=['oneYearOldVideos'])
-        play_list_data_df['video_stats'] = play_list_data_df['snippet.resourceId.videoId'].apply(
-            lambda x: get_video_stats(x))
+
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            video_stats = list(executor.map(fetch_video_stats, play_list_data_df['snippet.resourceId.videoId']))
+
+        play_list_data_df['video_stats'] = video_stats
+
         play_list_data_df = pd.concat([play_list_data_df, pd.json_normalize(play_list_data_df['video_stats'])],
                                       axis=1).drop(columns=['video_stats'])
 
