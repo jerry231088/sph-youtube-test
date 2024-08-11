@@ -13,10 +13,11 @@ from apis.get import fetch_video_statistics, fetch_channel_statistics, fetch_cha
     fetch_channel_topic_categories, fetch_channel_content_details, fetch_channel_snippet, \
     fetch_play_list_snippet_contents
 
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(os.path.dirname(current_dir))
 sys.path.append(parent_dir)
+
+"""Method to check if video published is older than 1 year by publishedAt"""
 
 
 def is_12_month_old(published_at):
@@ -24,6 +25,9 @@ def is_12_month_old(published_at):
     published_dt = datetime.strptime(published_at, date_fmt)
     one_yr_ago = datetime.now() - relativedelta(months=12)
     return published_dt >= one_yr_ago
+
+
+"""Filter 1 year old videos by channel wise videos"""
 
 
 def filter_videos(items):
@@ -35,6 +39,9 @@ def filter_videos(items):
                 if is_12_month_old(snippet['publishedAt']):
                     video_list_12_months_old.append(item)
     return video_list_12_months_old
+
+
+"""Method to get play list videos for a channel by playListId"""
 
 
 def get_play_list_videos(play_list_id):
@@ -51,6 +58,9 @@ def get_play_list_videos(play_list_id):
     return videos
 
 
+"""Method to get statistics for a video by video_id"""
+
+
 def get_video_stats(video_id):
     video_response = fetch_video_statistics(video_id)
     if len(video_response.get('items', [])) > 0:
@@ -59,8 +69,14 @@ def get_video_stats(video_id):
         return {}
 
 
+"""Fetch video statistics by video_id"""
+
+
 def fetch_video_stats(video_id):
     return get_video_stats(video_id)
+
+
+"""Fetch and upload channel wise summary and play list videos data"""
 
 
 def upload_sph_yt_data():
@@ -78,11 +94,11 @@ def upload_sph_yt_data():
 
             statistics = statistics_response.get('items', [])[0].get('statistics', {})
             ch_statistics.update({
-                    "viewCount": statistics.get('viewCount'),
-                    "subscriberCount": statistics.get('subscriberCount'),
-                    "hiddenSubscriberCount": statistics.get('hiddenSubscriberCount'),
-                    "videoCount": statistics.get('videoCount')
-                })
+                "viewCount": statistics.get('viewCount'),
+                "subscriberCount": statistics.get('subscriberCount'),
+                "hiddenSubscriberCount": statistics.get('hiddenSubscriberCount'),
+                "videoCount": statistics.get('videoCount')
+            })
 
             statistics_data.append(ch_statistics)
             print(f'{channel_name}: {ch_statistics}')
@@ -110,10 +126,10 @@ def upload_sph_yt_data():
             status_response = fetch_channel_status(channel_id)
             status = status_response.get('items', [])[0].get('status', {})
             ch_status.update({
-                    "privacyStatus": status.get('privacyStatus'),
-                    "isLinked": status.get('isLinked'),
-                    "madeForKids": status.get('madeForKids')
-                })
+                "privacyStatus": status.get('privacyStatus'),
+                "isLinked": status.get('isLinked'),
+                "madeForKids": status.get('madeForKids')
+            })
             status_data.append(ch_status)
             print(f'{channel_name}: {ch_status}')
             print('Fetched channel status successfully...')
@@ -123,8 +139,8 @@ def upload_sph_yt_data():
             topic_category_response = fetch_channel_topic_categories(channel_id)
             topic_category = topic_category_response.get('items', [])[0]
             ch_topic_category.update({
-                    "topicCategories": topic_category.get('topicDetails', {}).get('topicCategories', [])
-                })
+                "topicCategories": topic_category.get('topicDetails', {}).get('topicCategories', [])
+            })
             topic_category_data.append(ch_topic_category)
             print(f'{channel_name}: {ch_topic_category}')
             print('Fetched channel topic details successfully...')
@@ -133,7 +149,8 @@ def upload_sph_yt_data():
             content_detail_response = fetch_channel_content_details(channel_id)
             ch_play_list.update(init_data)
             play_list_id = content_detail_response.get('items', [])[0].get('contentDetails', {}).get('relatedPlaylists',
-                                                                                                     {}).get('uploads', '')
+                                                                                                     {}).get('uploads',
+                                                                                                             '')
             ch_play_list.update({'playListId': play_list_id})
             print('Fetching channel playlist items...')
             playlist_videos = get_play_list_videos(play_list_id)
