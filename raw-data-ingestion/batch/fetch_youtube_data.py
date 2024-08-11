@@ -3,13 +3,16 @@ import sys
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from concurrent.futures import ThreadPoolExecutor
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 from utils.s3 import upload_to_s3
 from utils.youtube import youtube_channels
 from apis.get import fetch_video_statistics, fetch_channel_statistics, fetch_channel_status, \
     fetch_channel_topic_categories, fetch_channel_content_details, fetch_channel_snippet, \
     fetch_play_list_snippet_contents
 
-from concurrent.futures import ThreadPoolExecutor
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(os.path.dirname(current_dir))
