@@ -7,6 +7,9 @@ raw_prefix = f'channel-data/raw'
 processed_prefix = f'channel-data/processed'
 
 
+"""Method to upload data to S3 bucket"""
+
+
 def upload_to_s3(df, part):
     # retry with exponential backoff?
     file_name = f'{part}.json.gz'
