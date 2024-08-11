@@ -4,3 +4,4 @@ pyspark~=3.5.1
 pandas~=2.2.2
 python-dateutil~=2.9.0.post0
 schedule~=1.2.2
+botocore~=1.34.157

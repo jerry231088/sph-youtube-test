@@ -101,8 +101,7 @@ def upload_sph_yt_data():
             })
 
             statistics_data.append(ch_statistics)
-            print(f'{channel_name}: {ch_statistics}')
-            print('Fetched channel statistics successfully...')
+            print(f'Fetched {channel_name} channel statistics successfully...')
 
             print('Fetching channel snippet...')
             ch_snippet.update(init_data)
@@ -118,8 +117,7 @@ def upload_sph_yt_data():
                 }
             )
             snippet_data.append(ch_snippet)
-            print(f'{channel_name}: {ch_snippet}')
-            print('Fetched channel snippet successfully...')
+            print(f'Fetched {channel_name} channel snippet successfully...')
 
             print('Fetching channel status...')
             ch_status.update(init_data)
@@ -131,8 +129,7 @@ def upload_sph_yt_data():
                 "madeForKids": status.get('madeForKids')
             })
             status_data.append(ch_status)
-            print(f'{channel_name}: {ch_status}')
-            print('Fetched channel status successfully...')
+            print(f'Fetched {channel_name} channel status successfully...')
 
             print('Fetching channel topic details...')
             ch_topic_category.update(init_data)
@@ -142,8 +139,7 @@ def upload_sph_yt_data():
                 "topicCategories": topic_category.get('topicDetails', {}).get('topicCategories', [])
             })
             topic_category_data.append(ch_topic_category)
-            print(f'{channel_name}: {ch_topic_category}')
-            print('Fetched channel topic details successfully...')
+            print(f'Fetched {channel_name} channel topic details successfully...')
 
             print('Fetching channel content details...')
             content_detail_response = fetch_channel_content_details(channel_id)
@@ -154,11 +150,10 @@ def upload_sph_yt_data():
             ch_play_list.update({'playListId': play_list_id})
             print('Fetching channel playlist items...')
             playlist_videos = get_play_list_videos(play_list_id)
-            print('Fetched channel playlist items successfully...')
+            print(f'Fetched {channel_name} channel playlist items successfully...')
             ch_play_list.update({'oneYearOldVideos': playlist_videos})
             play_list_data.append(ch_play_list)
-            print(f'{channel_name}: {ch_play_list}')
-            print('Fetched channel content details successfully...')
+            print('Fetched {channel_name} channel content details successfully...')
 
         part_df_dict = dict()
         statistics_data_df = pd.DataFrame(statistics_data)
@@ -180,10 +175,12 @@ def upload_sph_yt_data():
         play_list_data_df = pd.concat([play_list_data_df, pd.json_normalize(play_list_data_df['oneYearOldVideos'])],
                                       axis=1).drop(columns=['oneYearOldVideos'])
 
+        print('Fetching video statistics...')
         with ThreadPoolExecutor(max_workers=10) as executor:
             video_stats = list(executor.map(fetch_video_stats, play_list_data_df['snippet.resourceId.videoId']))
 
         play_list_data_df['video_stats'] = video_stats
+        print('Fetched video statistics successfully...')
 
         play_list_data_df = pd.concat([play_list_data_df, pd.json_normalize(play_list_data_df['video_stats'])],
                                       axis=1).drop(columns=['video_stats'])
@@ -197,6 +194,7 @@ def upload_sph_yt_data():
                 'playList': play_list_data_df
             }
         )
+        print(f'Upload to S3 started...')
         for k, v in part_df_dict.items():
             upload_to_s3(v, k)
     except Exception as e:
