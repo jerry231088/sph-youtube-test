@@ -5,7 +5,10 @@ import subprocess
 schedule_time = "21:31"
 
 
-def run_test_script():
+"""Method to run scheduled sph youtube data scripts"""
+
+
+def run_sph_yt_data_scripts():
     print("Starting fetch_youtube_data.py...")
     try:
         result = subprocess.run(["python3", "../raw-data-ingestion/batch/fetch_youtube_data.py"], check=True)
@@ -18,7 +21,7 @@ def run_test_script():
 
 
 print(f"Scheduling SPH Youtube data script at {schedule_time}...")
-schedule.every().day.at(schedule_time).do(run_test_script)
+schedule.every().day.at(schedule_time).do(run_sph_yt_data_scripts)
 
 while True:
     schedule.run_pending()

@@ -24,6 +24,9 @@ jars_path = os.path.join(project_dir, "jars", "hadoop-aws-3.3.4.jar") + "," + \
             os.path.join(project_dir, "jars", "hadoop-common-3.3.4.jar")
 
 
+"""Pyspark job to process raw sph youtube data and store it to create channel summary & video statistics channel wise"""
+
+
 def sph_etl():
     logger.info("Initializing Spark session...")
     # # Initialize Spark session with Hadoop AWS dependency
