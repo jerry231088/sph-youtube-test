@@ -1,8 +1,11 @@
 import logging
 import os
+import sys
 from pyspark.sql import *
 from pyspark.sql.functions import year, month, dayofmonth, current_date
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from utils.youtube import part_list
 from utils.s3 import bucket_name, raw_prefix, processed_prefix
