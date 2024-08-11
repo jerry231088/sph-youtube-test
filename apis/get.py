@@ -123,7 +123,7 @@ def fetch_video_statistics(video_id: str):
         print(f"An error occurred in fetch_video_statistics: {e}")
 
 
-"""Method to get youtube channel's playlistItems"""
+"""Method to get youtube channel's playlistItems snippet & contentDetails"""
 
 
 def fetch_play_list_snippet_contents(play_list_id: str, next_page: str):

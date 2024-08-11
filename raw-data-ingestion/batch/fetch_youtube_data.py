@@ -201,6 +201,7 @@ def upload_sph_yt_data():
             upload_to_s3(v, k)
     except Exception as e:
         print(f'Error: {e}')
+        sys.exit(1)
 
 
 if __name__ == "__main__":
