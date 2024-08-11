@@ -140,8 +140,9 @@ def sph_etl():
         ch_playlist_s3_path = f"{processed_s3_path}/channel_playlist"
 
         logger.info("Save to S3 bucket Channel Playlist dataframe...")
+        # .mode("overwrite") \
         ch_playlist_df.write \
-            .mode("overwrite") \
+            .mode("append") \
             .partitionBy("year", "month", "day") \
             .parquet(ch_playlist_s3_path, compression="snappy")
         logger.info("Channel Playlist save to S3 successful...")
